@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sarah@mauricio:~$</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--tinta:#0f0c1d;--panel:#1a1530;--rosa:#ff5c9a;--ambar:#ffcb6b;--menta:#7ee8c7;--texto:#ece6ff;--tenue:#7f78a8}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-size:14px;line-height:1.55;
+  color:var(--texto);background:radial-gradient(circle at 50% 20%,#4a1245,var(--tinta) 70%);
+  overflow:hidden;display:flex;align-items:center;justify-content:center;padding:14px
+}
+.pantalla{display:none;width:100%;max-width:520px;max-height:100%}
+.pantalla.activa{display:block}
+.ventana{background:var(--panel);border:1px solid #ffffff1f;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px #0009;max-height:calc(100vh - 28px);display:flex;flex-direction:column}
+.barra{display:flex;align-items:center;gap:7px;padding:10px 14px;background:#120e24;color:var(--tenue);font-size:12px}
+.barra i{width:11px;height:11px;border-radius:50%;display:block}
+.barra i:nth-child(1){background:var(--rosa)}.barra i:nth-child(2){background:var(--ambar)}.barra i:nth-child(3){background:var(--menta)}
+.barra span{margin-left:8px}
+.cuerpo{padding:16px 16px 18px;overflow-y:auto}
+.p{color:var(--menta)}
+.boot div{opacity:0;animation:ver .01s forwards;animation-delay:calc(var(--i)*.6s)}
+.warn{color:var(--ambar)}
+h2{font-size:19px;line-height:1.3;margin:14px 0 4px;color:var(--rosa)}
+.preg{opacity:0;animation:ver .01s forwards;animation-delay:3.6s}
+.botones{display:flex;gap:14px;justify-content:center;align-items:center;margin:26px 0 18px;min-height:56px}
+button{font-family:inherit;font-size:16px;font-weight:700;border:0;border-radius:10px;padding:13px 26px;cursor:pointer}
+button:focus-visible{outline:3px solid var(--ambar);outline-offset:3px}
+#si{position:relative;z-index:5;background:var(--rosa);color:#1a0613;box-shadow:0 0 28px #ff5c9a88;transition:transform .35s cubic-bezier(.3,1.7,.5,1)}
+#si.total{position:fixed;inset:0;width:100%;height:100%;border-radius:0;z-index:20;margin:0;font-size:min(30vw,170px);transition:none}
+#no{background:#ffffff1c;color:var(--texto);font-weight:400;white-space:nowrap}
+#no.suelto{position:fixed;z-index:10;transition:left .22s,top .22s}
+#log{min-height:92px;font-size:12px;color:var(--tenue)}
+#log .WARN{color:var(--ambar)}#log .ERROR,#log .FATAL{color:var(--rosa)}#log .INFO{color:var(--menta)}
+.l{position:relative;padding-left:2.7em;white-space:pre-wrap;word-break:break-word}
+.l::before{counter-increment:n;content:counter(n);position:absolute;left:0;width:1.9em;text-align:right;color:#51496f}
+#codigo{counter-reset:n;min-height:300px}
+.c{color:var(--tenue);font-style:italic}.k{color:var(--rosa)}.s{color:var(--ambar)}.f{color:var(--menta)}
+#firma,#up{opacity:0;transition:opacity 1s;margin-top:14px}
+#firma.ver,#up.ver{opacity:1}
+.corazon{position:fixed;bottom:-40px;pointer-events:none;color:var(--rosa);opacity:.85;animation:subir linear forwards}
+@keyframes subir{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+@keyframes ver{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.corazon{display:none}#si{transition:none}}
+</style>
+</head>
+<body>
+
+<section id="pregunta" class="pantalla activa">
+  <div class="ventana">
+    <div class="barra"><i></i><i></i><i></i><span id="titulo"></span></div>
+    <div class="cuerpo">
+      <div class="boot">
+        <div style="--i:0"><span class="p" id="prompt"></span> ./pregunta.sh</div>
+        <div style="--i:1">Hola, <span id="saludo"></span> 👋</div>
+        <div style="--i:2">Cargando cariño... [██████████] 100%</div>
+        <div style="--i:3" class="warn">WARN: exceso de ternura detectado</div>
+        <div style="--i:4">Tengo una pregunta importante:</div>
+      </div>
+      <div class="preg">
+        <h2>¿Me querés un poquito? [Y/n]</h2>
+        <div class="botones">
+          <button id="si">Sí 💖</button>
+          <button id="no">No</button>
+        </div>
+        <div id="log"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cartaPantalla" class="pantalla">
+  <div class="ventana">
+    <div class="barra"><i></i><i></i><i></i><span>carta.js</span></div>
+    <div class="cuerpo">
+      <div id="codigo"></div>
+      <div id="firma"></div>
+      <div id="up"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ====== EDITÁ SOLO ESTO ====== */
+const NOMBRE = "Mauricio";
+const YO = "Sarah";
+const DESDE = "2026-10-12";   // AAAA-MM-DD. Dejalo "" si no querés contador
+const FECHA = DESDE.split('-').reverse().join('/');
+const CARTA =
+`// carta.js — para ${NOMBRE}, de ${YO}
+// versión 1.0 · compila sin errores desde el ${FECHA}
+
+const ${YO.toLowerCase()} = "programadora";
+const ${NOMBRE.toLowerCase()} = "mi persona favorita";
+
+// Cosas que descubrí en este primer mes:
+const features = [
+  "me hacés reír aunque el código no compile",
+  "con vos todo anda en producción",
+  "sos mi lugar favorito, sin dependencias"
+];
+
+// Bugs conocidos: ninguno.
+// Bugs en mi corazón: uno, y se llama ${NOMBRE}.
+
+while (true) {
+  quererte(); // loop infinito, no pienso arreglarlo
+}
+
+// Te quiero muchísimo. Quería que lo supieras.`;
+
+/* Cada intento de decir "No" muestra esto: [texto del No, texto del Sí, línea de log] */
+const INTENTOS = [
+  ["Error 404: 'No' not found",  "Sí (default)",  "WARN: la opción 'No' es inestable"],
+  ["Segmentation fault",         "Sí ✓",          "ERROR: segfault en negarse.c"],
+  ["undefined is not a function","SÍ",            "ERROR: no() no es una función"],
+  ["NullPointerException",       "SÍ!",           "FATAL: tu respuesta es null"],
+  ["¿Probaste apagar y prender?","SÍ!!",          "INFO: reiniciando tu corazón..."],
+  ["git revert 'No'",            "commit: sí",    "INFO: git revirtiendo tu 'No'"],
+  ["Stack Overflow no sabe",     "Sí (aceptada)", "WARN: pregunta duplicada, ya dijiste que sí"],
+  ["while(true){ preguntar() }", "SÍ SÍ SÍ",      "WARN: loop infinito detectado"],
+  ["sudo rm -rf No",             "sudo sí",       "INFO: eliminando 'No'... 63%"],
+  ["try { no } catch { sí }",    "catch(sí)",     "INFO: excepción capturada, ejecutando sí()"],
+  ["En mi máquina anda",         "Compila: SÍ",   "INFO: en mi máquina el Sí funciona perfecto"],
+  ["npm ERR! ERESOLVE",          "npm i sí",      "ERROR: dependencia 'No' sin resolver"]
+];
+/* ============================= */
+
+const $ = id => document.getElementById(id);
+const si = $('si'), no = $('no');
+const prompt_ = YO.toLowerCase() + "@" + NOMBRE.toLowerCase() + ":~$";
+$('prompt').textContent = prompt_;
+$('titulo').textContent = prompt_.slice(0, -3) + ": ~/amor";
+$('saludo').textContent = NOMBRE;
+
+/* Log de terminal */
+function log(t){
+  const [nivel, ...resto] = t.split(': ');
+  const d = document.createElement('div');
+  const s = document.createElement('span');
+  s.className = nivel; s.textContent = nivel;
+  d.append(s, ': ' + resto.join(': '));
+  $('log').appendChild(d);
+  while ($('log').children.length > 5) $('log').firstChild.remove();
+}
+
+/* El "No" huye y el "Sí" invade la pantalla */
+let n = 0, ultimo = 0, jugando = true;
+function huir(){
+  const ahora = Date.now();
+  if (!jugando || ahora - ultimo < 300) return;
+  ultimo = ahora;
+  if (navigator.vibrate) navigator.vibrate(40);
+  if (n >= INTENTOS.length){
+    jugando = false;
+    no.style.display = 'none';
+    si.style.transform = '';
+    si.textContent = 'SÍ ❤';
+    si.classList.add('total');
+    return;
+  }
+  const [txtNo, txtSi, linea] = INTENTOS[n];
+  n++;
+  no.textContent = txtNo;
+  no.style.fontSize = Math.max(16 - n*0.35, 11) + 'px';
+  no.classList.add('suelto');
+  const m = 10, w = no.offsetWidth, h = no.offsetHeight;
+  no.style.left = m + Math.random() * Math.max(0, innerWidth - w - 2*m) + 'px';
+  no.style.top  = m + Math.random() * Math.max(0, innerHeight - h - 2*m) + 'px';
+  si.textContent = txtSi;
+  si.style.transform = 'scale(' + Math.pow(1.27, n).toFixed(2) + ')';
+  log(linea);
+}
+function cerca(x, y){
+  const r = no.getBoundingClientRect();
+  return Math.hypot(x - (r.left + r.width/2), y - (r.top + r.height/2)) < Math.max(r.width, r.height)/2 + 60;
+}
+no.addEventListener('pointerenter', huir);
+no.addEventListener('click', huir);
+document.addEventListener('pointermove', e => { if (jugando && cerca(e.clientX, e.clientY)) huir(); });
+document.addEventListener('pointerdown', e => { if (jugando && cerca(e.clientX, e.clientY)) huir(); });
+
+/* Corazones flotando */
+function corazon(){
+  const c = document.createElement('span');
+  c.className = 'corazon';
+  c.textContent = ['💖','<3','❤','{ }',';','01','💕'][Math.random()*7|0];
+  c.style.left = Math.random()*100 + 'vw';
+  c.style.fontSize = 14 + Math.random()*22 + 'px';
+  c.style.animationDuration = 5 + Math.random()*5 + 's';
+  document.body.appendChild(c);
+  setTimeout(() => c.remove(), 10500);
+}
+setInterval(corazon, 800);
+
+/* Carta que se escribe sola (tocá para saltar la animación) */
+let rapido = false;
+const esperar = ms => rapido ? Promise.resolve() : new Promise(r => setTimeout(r, ms));
+function colorear(t){
+  t = t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const i = t.indexOf('//');
+  let cod = i < 0 ? t : t.slice(0, i);
+  const com = i < 0 ? '' : t.slice(i);
+  cod = cod.replace(/("[^"]*")/g, '<span class="s">$1</span>')
+           .replace(/\b(const|let|function|return|while|true|new)\b/g, '<span class="k">$1</span>')
+           .replace(/\b([a-zA-Z_]\w*)(?=\()/g, '<span class="f">$1</span>');
+  return cod + (com ? '<span class="c">' + com + '</span>' : '');
+}
+async function escribir(){
+  const cont = $('codigo');
+  for (const linea of CARTA.split('\n')){
+    const d = document.createElement('div');
+    d.className = 'l';
+    cont.appendChild(d);
+    for (let i = 1; i <= linea.length; i++){
+      d.textContent = linea.slice(0, i);
+      await esperar(20);
+    }
+    d.innerHTML = colorear(linea) || '&nbsp;';
+    d.scrollIntoView({block: 'nearest'});
+    await esperar(110);
+  }
+  $('firma').innerHTML = '<span class="p">' + prompt_ + '</span> git push --force corazon<br>→ enviado ✓ (sin conflictos)';
+  $('firma').classList.add('ver');
+  contador();
+  d_fin();
+}
+function d_fin(){ $('firma').scrollIntoView({block: 'nearest'}); }
+
+/* uptime juntos */
+function contador(){
+  if (!DESDE) return;
+  const el = $('up');
+  const t = () => {
+    const s = Math.floor((Date.now() - new Date(DESDE + 'T00:00:00')) / 1000);
+    if (s < 0) return;
+    const p = x => String(x).padStart(2, '0');
+    el.innerHTML = '<span class="p">' + prompt_ + '</span> uptime<br>up ' + Math.floor(s/86400) + ' días, ' +
+      p(Math.floor(s%86400/3600)) + ':' + p(Math.floor(s%3600/60)) + ':' + p(s%60) + ' 💕';
+  };
+  t(); setInterval(t, 1000);
+  el.classList.add('ver');
+}
+
+/* Al decir que sí */
+si.addEventListener('click', () => {
+  jugando = false;
+  $('pregunta').classList.remove('activa');
+  no.style.display = 'none';
+  $('cartaPantalla').classList.add('activa');
+  for (let i = 0; i < 30; i++) setTimeout(corazon, i * 60);
+  escribir();
+});
+$('cartaPantalla').addEventListener('pointerdown', () => { rapido = true; });
+</script>
+</body>
+</html>
