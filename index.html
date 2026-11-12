@@ -11,27 +11,23 @@
 html,body{height:100%}
 body{
   font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-size:14px;line-height:1.55;
-  color:var(--texto);background:radial-gradient(circle at 50% 20%,#4a1245,var(--tinta) 70%);
-  overflow:hidden;display:flex;align-items:center;justify-content:center;padding:14px
+  color:var(--texto);background:#0b0710;
+  overflow:hidden;display:flex;align-items:flex-start;justify-content:center;padding:14px
 }
 .pantalla{display:none;width:100%;max-width:520px;max-height:100%}
 .pantalla.activa{display:block}
-.ventana{background:var(--panel);border:1px solid #ffffff1f;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px #0009;max-height:calc(100vh - 28px);display:flex;flex-direction:column}
-.barra{display:flex;align-items:center;gap:7px;padding:10px 14px;background:#120e24;color:var(--tenue);font-size:12px}
-.barra i{width:11px;height:11px;border-radius:50%;display:block}
-.barra i:nth-child(1){background:var(--rosa)}.barra i:nth-child(2){background:var(--ambar)}.barra i:nth-child(3){background:var(--menta)}
-.barra span{margin-left:8px}
-.cuerpo{padding:16px 16px 18px;overflow-y:auto}
+.ventana{max-height:calc(100vh - 28px);display:flex;flex-direction:column}
+.cuerpo{padding:4px 2px 18px;overflow-y:auto}
 .p{color:var(--menta)}
 .boot div{opacity:0;animation:ver .01s forwards;animation-delay:calc(var(--i)*.6s)}
 .warn{color:var(--ambar)}
 h2{font-size:19px;line-height:1.3;margin:14px 0 4px;color:var(--rosa)}
 .preg{opacity:0;animation:ver .01s forwards;animation-delay:3.6s}
-.botones{display:flex;gap:14px;justify-content:center;align-items:center;margin:26px 0 18px;min-height:56px}
-button{font-family:inherit;font-size:16px;font-weight:700;border:0;border-radius:10px;padding:13px 26px;cursor:pointer}
+.botones{display:flex;gap:14px;justify-content:flex-start;align-items:center;margin:26px 0 18px;min-height:56px}
+button{font-family:inherit;font-size:16px;font-weight:700;border:0;border-radius:4px;padding:13px 26px;cursor:pointer}
 button:focus-visible,input:focus-visible{outline:3px solid var(--ambar);outline-offset:3px}
 #si{position:relative;z-index:5;background:var(--rosa);color:#1a0613;box-shadow:0 0 28px #ff5c9a88;transition:transform .35s cubic-bezier(.3,1.7,.5,1)}
-#si.total{position:fixed;inset:0;width:100%;height:100%;border-radius:0;z-index:20;margin:0;font-size:min(30vw,170px);transition:none}
+#si.total{position:fixed;inset:0;width:100%;height:100%;border-radius:0;z-index:20;margin:0;font-size:min(24vw,150px);transition:none}
 #no{background:#ffffff1c;color:var(--texto);font-weight:400;white-space:nowrap}
 #no.suelto{position:fixed;z-index:10;transition:left .22s,top .22s}
 .log{min-height:92px;font-size:12px;color:var(--tenue)}
@@ -47,11 +43,13 @@ input{font-family:inherit;font-size:16px;background:var(--tinta);color:var(--tex
 #error{color:var(--rosa);margin-top:12px}
 #firma,#up{opacity:0;transition:opacity 1s;margin-top:14px}
 #firma.ver,#up.ver{opacity:1}
+.cur::after{content:"█";color:var(--menta);animation:parpadeo 1s steps(1) infinite}
 .barra-v{height:10px;background:#ffffff1c;border-radius:6px;overflow:hidden;margin:8px 0 4px}
 .barra-v i{display:block;height:100%;background:var(--rosa)}
 .corazon{position:fixed;bottom:-40px;pointer-events:none;color:var(--rosa);opacity:.85;animation:subir linear forwards}
 @keyframes subir{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
 @keyframes ver{to{opacity:1}}
+@keyframes parpadeo{50%{opacity:0}}
 @media (prefers-reduced-motion:reduce){.corazon{display:none}#si{transition:none}}
 </style>
 </head>
@@ -59,11 +57,10 @@ input{font-family:inherit;font-size:16px;background:var(--tinta);color:var(--tex
 
 <section id="pregunta" class="pantalla activa">
   <div class="ventana">
-    <div class="barra"><i></i><i></i><i></i><span id="titulo"></span></div>
     <div class="cuerpo">
       <div class="boot">
         <div style="--i:0"><span class="p" id="prompt"></span> ./pregunta.sh</div>
-        <div style="--i:1">Hola, <span id="saludo"></span> 👋</div>
+        <div style="--i:1">Hola, <span id="saludo"></span></div>
         <div style="--i:2">Cargando cariño... [██████████] 100%</div>
         <div style="--i:3" class="warn">WARN: exceso de ternura detectado</div>
         <div style="--i:4">Tengo una pregunta importante:</div>
@@ -71,7 +68,7 @@ input{font-family:inherit;font-size:16px;background:var(--tinta);color:var(--tex
       <div class="preg">
         <h2>¿Me querés un poquito? [Y/n]</h2>
         <div class="botones">
-          <button id="si">Sí 💖</button>
+          <button id="si">Sí</button>
           <button id="no">No</button>
         </div>
         <div id="log" class="log"></div>
@@ -82,10 +79,9 @@ input{font-family:inherit;font-size:16px;background:var(--tinta);color:var(--tex
 
 <section id="acceso" class="pantalla">
   <div class="ventana">
-    <div class="barra"><i></i><i></i><i></i><span>abrir_carta.sh</span></div>
     <div class="cuerpo">
       <div><span class="p promptX"></span> ./abrir_carta.sh</div>
-      <div>🔒 La carta está protegida.</div>
+      <div><span class="warn">[BLOQUEADO]</span> La carta está protegida.</div>
       <div class="warn" id="pista0"></div>
       <div class="fila">
         <span class="p">password:</span>
@@ -99,8 +95,8 @@ input{font-family:inherit;font-size:16px;background:var(--tinta);color:var(--tex
 
 <section id="cartaPantalla" class="pantalla">
   <div class="ventana">
-    <div class="barra"><i></i><i></i><i></i><span>carta.js</span></div>
     <div class="cuerpo">
+      <div><span class="p promptX"></span> cat -n carta.js</div>
       <div id="codigo"></div>
       <div id="error"></div>
       <div id="firma"></div>
@@ -139,17 +135,17 @@ for (let dia = 1; dia < Infinity; dia++) {
 /* Cada intento de decir "No" muestra: [texto del No, texto del Sí, línea de log] */
 const INTENTOS = [
   ["Error 404: 'No' no existe",   "Sí (default)", "WARN: la opción 'No' no se encuentra"],
-  ["Syntax error: falta un ;",    "Sí ✓",         "ERROR: línea 1, falta un punto y coma"],
+  ["Syntax error: falta un ;",    "Sí [ok]",         "ERROR: línea 1, falta un punto y coma"],
   ["undefined",                   "SÍ",           "ERROR: la variable 'no' es undefined"],
   ["Ctrl+Z",                      "SÍ!",          "INFO: deshaciendo tu 'No'..."],
   ["¿Probaste apagar y prender?", "SÍ!!",         "INFO: reiniciando tu corazón..."],
   ["Bucle infinito",              "SÍ SÍ",        "WARN: bucle infinito de 'No' detectado"],
-  ["if (no) { ... }",             "if (sí) ✓",    "INFO: el if(no) nunca se ejecuta"],
+  ["if (no) { ... }",             "if (sí) { ok }",    "INFO: el if(no) nunca se ejecuta"],
   ["Cargando... 99%",             "Sí (100%)",    "WARN: 'No' lleva 99% hace rato"],
   ["En mi compu anda",            "Compila: SÍ",  "INFO: en mi compu el Sí funciona perfecto"],
   ["false",                       "true",         "WARN: 'false' no es una respuesta válida"],
   ["Memoria llena",               "SÍ SÍ SÍ",     "ERROR: el Sí ocupa toda la memoria"],
-  ["Pantalla azul 💀",            "SÍ ❤",         "FATAL: pantalla azul, no hay vuelta atrás"]
+  ["Pantalla azul",            "SÍ <3",         "FATAL: pantalla azul, no hay vuelta atrás"]
 ];
 /* ============================= */
 
@@ -158,7 +154,7 @@ const si = $('si'), no = $('no');
 const prompt_ = yo + "@" + nom + ":~$";
 $('prompt').textContent = prompt_;
 document.querySelectorAll('.promptX').forEach(e => e.textContent = prompt_);
-$('titulo').textContent = prompt_.slice(0, -3) + ": ~/amor";
+
 $('saludo').textContent = NOMBRE;
 
 /* Log de terminal */
@@ -184,7 +180,7 @@ function huir(){
     jugando = false;
     no.style.display = 'none';
     si.style.transform = '';
-    si.textContent = 'SÍ ❤';
+    si.textContent = 'SÍ <3';
     si.classList.add('total');
     return;
   }
@@ -213,7 +209,7 @@ document.addEventListener('pointerdown', e => { if (jugando && cerca(e.clientX, 
 function corazon(){
   const c = document.createElement('span');
   c.className = 'corazon';
-  c.textContent = ['💖','<3','❤','{ }',';','01','💕'][Math.random()*7|0];
+  c.textContent = ['<3','<3','{ }',';','01','//'][Math.random()*6|0];
   c.style.left = Math.random()*100 + 'vw';
   c.style.fontSize = 14 + Math.random()*22 + 'px';
   c.style.animationDuration = 5 + Math.random()*5 + 's';
@@ -228,14 +224,14 @@ const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto'
 const PISTAS = [
   'Pista 1: es el día en que empezó todo.',
   'Pista 2: fue en ' + MESES[(+mes || 1) - 1] + '.',
-  'Pista 3: fue un día ' + (+dia) + '. Ya casi 😉'
+  'Pista 3: fue un día ' + (+dia) + '. Ya casi.'
 ];
 $('pista0').textContent = 'Pista: la fecha en que empezó todo (dd/mm/aaaa)';
 let fallos = 0;
 function intentar(){
   const solo = $('clave').value.replace(/\D/g, '');
   if (solo === dia + mes + anio || solo === dia + mes + anio.slice(2)){
-    log('INFO: Acceso concedido ✓', 'logAcceso');
+    log('INFO: Acceso concedido', 'logAcceso');
     $('clave').disabled = true; $('entrar').disabled = true;
     setTimeout(abrirCarta, 900);
     return;
@@ -243,7 +239,7 @@ function intentar(){
   fallos++;
   log('ERROR: contraseña incorrecta (intento ' + fallos + ')', 'logAcceso');
   if (fallos <= PISTAS.length) log('INFO: ' + PISTAS[fallos - 1], 'logAcceso');
-  else { log('INFO: bueno, te la regalo 😘', 'logAcceso'); $('clave').value = FECHA; }
+  else { log('INFO: bueno, te la regalo', 'logAcceso'); $('clave').value = FECHA; }
 }
 $('entrar').addEventListener('click', intentar);
 $('clave').addEventListener('keydown', e => { if (e.key === 'Enter') intentar(); });
@@ -282,12 +278,12 @@ async function escribir(){
   if (e >= 0){
     await esperar(500);
     divs[e].classList.add('err');
-    $('error').innerHTML = '✖ SyntaxError: falta un ; en la línea ' + (e + 1) +
-      '<br>Un solo punto y coma arruina todo el programa...<br>pero ningún error arruina lo nuestro. 😘';
+    $('error').innerHTML = 'SyntaxError: falta un ; en la línea ' + (e + 1) +
+      '<br>Un solo punto y coma arruina todo el programa...<br>pero ningún error arruina lo nuestro.';
     $('error').scrollIntoView({block: 'nearest'});
     await esperar(1500);
   }
-  $('firma').innerHTML = '<span class="p">' + prompt_ + '</span> enviar_cariño()<br>→ enviado ✓ (0 errores en el corazón)';
+  $('firma').innerHTML = '<span class="p">' + prompt_ + '</span> enviar_cariño()<br>-> enviado (0 errores en el corazón)';
   $('firma').classList.add('ver');
   relojes();
   $('up').scrollIntoView({block: 'nearest'});
@@ -306,11 +302,11 @@ function relojes(){
     const f = Math.max(0, Math.floor((fin - ahora) / 1000));
     const pct = Math.min(100, Math.max(0, (ahora - ini) / (fin - ini) * 100)).toFixed(1);
     el.innerHTML =
-      '<span class="p">' + prompt_ + '</span> uptime<br>up ' + fmt(s) + ' 💕<br><br>' +
+      '<span class="p">' + prompt_ + '</span> uptime<br>up ' + fmt(s) + '<br><br>' +
       '<span class="p">' + prompt_ + '</span> ./deploy.sh --version 2.0<br>' +
       'Próximo deploy: v2.0 el ' + fin.toLocaleDateString('es-AR') + ' (nuestro primer aniversario)<br>' +
       'Faltan ' + fmt(f) + '<br>' +
-      '<div class="barra-v"><i style="width:' + pct + '%"></i></div>' + pct + '% cargando...';
+      '<div class="barra-v"><i style="width:' + pct + '%"></i></div>' + pct + '% cargando...<br><br><span class="p">' + prompt_ + '</span> <span class="cur"></span>';
   };
   t(); setInterval(t, 1000);
   el.classList.add('ver');
